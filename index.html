@@ -6,7 +6,7 @@
     <title>CleanEase - Online Laundry Service</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* ── Mobile Nav ── */
+        /* ── Mobile Nav Hamburger ── */
         .nav-hamburger {
             display: none;
             flex-direction: column;
@@ -15,52 +15,87 @@
             border: none;
             cursor: pointer;
             padding: 6px;
+            z-index: 10;
         }
         .nav-hamburger span {
             display: block;
-            width: 24px;
-            height: 2px;
+            width: 26px;
+            height: 2.5px;
             background: #fff;
             border-radius: 2px;
             transition: all .3s;
         }
-        .mobile-nav-open .nav-hamburger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-        .mobile-nav-open .nav-hamburger span:nth-child(2) { opacity: 0; }
-        .mobile-nav-open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-        .nav-links-mobile {
+        /* ── Full screen mobile menu — attached to body, not nav ── */
+        #mobileMenu {
             display: none;
-            position: absolute;
-            top: 100%;
-            left: 0; right: 0;
-            background: rgba(13,71,161,0.98);
-            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #0d2b8e;
+            z-index: 99999;
             flex-direction: column;
-            padding: 12px 0;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
         }
-        .nav-links-mobile.open { display: flex; }
-        .nav-links-mobile a {
-            color: rgba(255,255,255,0.9);
+        #mobileMenu.open { display: flex; }
+
+        .mobile-menu-close {
+            position: absolute;
+            top: 20px; right: 20px;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.25);
+            color: white;
+            width: 46px; height: 46px;
+            border-radius: 50%;
+            font-size: 1.3rem;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .mobile-menu-brand {
+            color: white;
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 48px;
+            letter-spacing: -0.5px;
+        }
+
+        #mobileMenu a {
+            color: rgba(255,255,255,0.88);
             text-decoration: none;
-            padding: 14px 24px;
-            font-size: 1rem;
+            font-size: 1.3rem;
             font-weight: 600;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            transition: background .2s;
+            padding: 20px 0;
+            width: 100%;
+            max-width: 340px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            transition: color .2s;
         }
-        .nav-links-mobile a:last-child { border-bottom: none; }
-        .nav-links-mobile a:hover { background: rgba(255,255,255,0.1); }
+        #mobileMenu a:last-child { border-bottom: none; }
+        #mobileMenu a:hover { color: #80deea; }
 
         @media (max-width: 640px) {
             .nav-links { display: none !important; }
             .nav-hamburger { display: flex !important; }
-            .landing-nav { position: relative; }
         }
     </style>
 </head>
 <body>
+
+<!-- ── Mobile Full-Screen Menu (outside everything) ── -->
+<div id="mobileMenu">
+    <button class="mobile-menu-close" onclick="closeMobileMenu()">✕</button>
+    <div class="mobile-menu-brand">🧺 CleanEase</div>
+    <a href="#features" onclick="closeMobileMenu()">✨ Features</a>
+    <a href="#pricing" onclick="closeMobileMenu()">💰 Pricing</a>
+    <a href="customer-login.html">🔑 Customer Login</a>
+    <a href="admin-login.html">📊 Admin Login</a>
+</div>
+
 <div class="landing-page">
 
     <!-- Navigation -->
@@ -79,16 +114,9 @@
             <a href="customer-login.html">Login</a>
         </div>
         <!-- Mobile hamburger -->
-        <button class="nav-hamburger" id="navHamburger" onclick="toggleMobileNav()" aria-label="Menu">
+        <button class="nav-hamburger" onclick="openMobileMenu()" aria-label="Menu">
             <span></span><span></span><span></span>
         </button>
-        <!-- Mobile dropdown -->
-        <div class="nav-links-mobile" id="mobileNavLinks">
-            <a href="#features" onclick="closeMobileNav()">✨ Features</a>
-            <a href="#pricing" onclick="closeMobileNav()">💰 Pricing</a>
-            <a href="customer-login.html">🔑 Customer Login</a>
-            <a href="admin-login.html">📊 Admin Login</a>
-        </div>
     </nav>
 
     <!-- Hero Section -->
@@ -218,20 +246,14 @@
 </div>
 
 <script>
-function toggleMobileNav() {
-    var nav = document.getElementById('landingNav');
-    var links = document.getElementById('mobileNavLinks');
-    nav.classList.toggle('mobile-nav-open');
-    links.classList.toggle('open');
+function openMobileMenu() {
+    document.getElementById('mobileMenu').classList.add('open');
+    document.body.style.overflow = 'hidden';
 }
-function closeMobileNav() {
-    document.getElementById('landingNav').classList.remove('mobile-nav-open');
-    document.getElementById('mobileNavLinks').classList.remove('open');
+function closeMobileMenu() {
+    document.getElementById('mobileMenu').classList.remove('open');
+    document.body.style.overflow = '';
 }
-// Close on outside click
-document.addEventListener('click', function(e) {
-    if (!e.target.closest('#landingNav')) closeMobileNav();
-});
 </script>
 </body>
 </html>
