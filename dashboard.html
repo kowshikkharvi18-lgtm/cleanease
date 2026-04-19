@@ -442,6 +442,13 @@
                 <div class="page-header">
                     <div><h2>Manage Orders</h2><p>View and update all customer orders</p></div>
                 </div>
+                <!-- Search bar -->
+                <div style="margin-bottom:16px;">
+                    <input type="text" id="orderSearchInput"
+                        placeholder="🔍  Search by Order ID, customer name, phone or status..."
+                        oninput="loadOrdersTable(this.value.trim().toLowerCase())"
+                        style="width:100%;padding:10px 16px;border:1.5px solid var(--border);border-radius:10px;font-size:0.9rem;background:var(--card-bg);color:var(--text);outline:none;box-sizing:border-box;font-family:inherit;">
+                </div>
                 <div class="card">
                     <div class="table-wrapper">
                         <table id="ordersTable">
@@ -528,7 +535,7 @@
     <div class="modal-box">
         <div class="bill-header">
             <h2>🧺 CleanEase</h2>
-            <p>Online Laundry Service &nbsp;|&nbsp; (555) 123-4567</p>
+            <p>Online Laundry Service &nbsp;|&nbsp; +91 83100 39727</p>
         </div>
         <div class="bill-body">
             <div class="bill-info-grid">

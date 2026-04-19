@@ -22,7 +22,7 @@
     --radius-sm: 10px;
     --shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.06);
     --shadow-lg: 0 8px 32px rgba(0,0,0,.12);
-    --transition: all .25s cubic-bezier(.4,0,.2,1);
+    --transition: all .18s cubic-bezier(.4,0,.2,1);
 }
 
 /* ── Layout ── */
@@ -2081,56 +2081,150 @@ input[type="date"].ni-input {
 }
 
 /* ══════════════════════════════════════════════
-   DARK MODE
+   DARK MODE — Complete (like Google/YouTube)
    ══════════════════════════════════════════════ */
+
+/* Smooth transition on toggle */
+body { transition: background-color 0.25s ease, color 0.25s ease; }
+body * { transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease; }
+/* Exclude animations from transition override */
+body *[class*="animate"], body *[class*="pulse"], body *[class*="spin"] { transition: none; }
+
 body.dark-mode {
-    --page-bg:  #0f172a;
-    --card-bg:  #1e293b;
-    --text:     #f1f5f9;
-    --text-2:   #94a3b8;
-    --text-3:   #64748b;
-    --border:   #334155;
-    --shadow:   0 1px 3px rgba(0,0,0,.3), 0 4px 16px rgba(0,0,0,.3);
-    --shadow-lg:0 8px 32px rgba(0,0,0,.4);
+    --page-bg:   #111827;
+    --card-bg:   #1f2937;
+    --text:      #f9fafb;
+    --text-2:    #9ca3af;
+    --text-3:    #6b7280;
+    --border:    #374151;
+    --shadow:    0 1px 3px rgba(0,0,0,.4), 0 4px 16px rgba(0,0,0,.4);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,.5);
+    background-color: #111827 !important;
+    color: #f9fafb !important;
 }
 
-body.dark-mode .topbar          { background: #1e293b; border-color: #334155; }
-body.dark-mode .sidebar         { background: #020617; }
-body.dark-mode .sidebar-user    { background: rgba(255,255,255,.04); border-color: rgba(255,255,255,.06); }
-body.dark-mode .topbar-clock    { background: #0f172a; border-color: #334155; }
-body.dark-mode .dark-toggle     { background: #0f172a; border-color: #334155; }
-body.dark-mode .notif-btn       { background: #0f172a; border-color: #334155; }
-body.dark-mode .order-card      { background: #1e293b; border-color: #334155; }
-body.dark-mode .order-card-footer { background: #0f172a; }
-body.dark-mode .order-timeline  { background: #0f172a; border-color: #334155; }
-body.dark-mode .form-section    { background: #1e293b; border-color: #334155; }
-body.dark-mode .order-card-section { background: #1e293b; border-color: #334155; }
-body.dark-mode .order-card-section-header { background: linear-gradient(135deg, #1e293b, #0f172a); }
-body.dark-mode .ni-input        { background: #0f172a !important; border-color: #334155 !important; color: #f1f5f9 !important; }
-body.dark-mode .ni-input:focus  { background: #1e293b !important; border-color: var(--accent) !important; }
-body.dark-mode .cloth-item-row  { background: linear-gradient(135deg, #1e293b, #0f172a) !important; border-color: #334155 !important; }
+/* Layout */
+body.dark-mode .dashboard-layout,
+body.dark-mode .main-content,
+body.dark-mode .page-content { background: #111827; }
+
+/* Sidebar */
+body.dark-mode .sidebar           { background: #0d1117 !important; }
+body.dark-mode .sidebar-user      { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.08); }
+body.dark-mode .nav-item          { color: rgba(255,255,255,.6); }
+body.dark-mode .nav-item:hover    { background: rgba(255,255,255,.08); color: #fff; }
+body.dark-mode .nav-item.active   { background: rgba(99,102,241,.2); color: #fff; }
+body.dark-mode .nav-section-title { color: rgba(255,255,255,.3); }
+
+/* Topbar */
+body.dark-mode .topbar            { background: #1f2937; border-color: #374151; }
+body.dark-mode .topbar-title h2   { color: #f9fafb; }
+body.dark-mode .topbar-title p    { color: #9ca3af; }
+body.dark-mode .topbar-clock      { background: #111827; border-color: #374151; }
+body.dark-mode .clock-time        { color: #f9fafb; }
+body.dark-mode .clock-date        { color: #6b7280; }
+body.dark-mode .dark-toggle       { background: #111827; border-color: #374151; }
+body.dark-mode .notif-btn         { background: #111827; border-color: #374151; }
+body.dark-mode .hamburger-btn     { border-color: #374151; }
+body.dark-mode .hamburger-btn span { background: #f9fafb; }
+
+/* Cards & Stats */
+body.dark-mode .card              { background: #1f2937; border-color: #374151; }
+body.dark-mode .stat-card         { background: #1f2937; border-color: #374151; }
+body.dark-mode .stat-info h3      { color: #9ca3af; }
+body.dark-mode .stat-info p       { color: #f9fafb; }
+body.dark-mode .card-header       { border-color: #374151; }
+body.dark-mode .card-header h3    { color: #f9fafb; }
+
+/* Tables */
+body.dark-mode thead th           { background: #111827; color: #9ca3af; border-color: #374151; }
+body.dark-mode tbody td           { color: #f9fafb; border-color: #374151; }
+body.dark-mode tbody tr:hover     { background: #111827; }
+
+/* Order Cards */
+body.dark-mode .order-card        { background: #1f2937; border-color: #374151; }
+body.dark-mode .order-card-body p { color: #9ca3af; }
+body.dark-mode .order-card-body p strong { color: #f9fafb; }
+body.dark-mode .order-card-footer { background: #111827; border-color: #374151; }
+body.dark-mode .order-timeline    { background: #111827; border-color: #374151; }
+body.dark-mode .timeline-step span { color: #6b7280; }
+body.dark-mode .timeline-step.done span    { color: #10b981; }
+body.dark-mode .timeline-step.current span { color: #818cf8; }
+
+/* New Order Form */
+body.dark-mode .order-card-section        { background: #1f2937; border-color: #374151; }
+body.dark-mode .order-card-section-header { background: #111827; border-color: #374151; }
+body.dark-mode .order-card-section-header h3 { color: #f9fafb; }
+body.dark-mode .order-card-section-header p  { color: #9ca3af; }
+body.dark-mode .ni-label          { color: #9ca3af; }
+body.dark-mode .ni-input          { background: #111827 !important; border-color: #374151 !important; color: #f9fafb !important; }
+body.dark-mode .ni-input::placeholder { color: #4b5563 !important; }
+body.dark-mode .ni-input:focus    { background: #1f2937 !important; border-color: #6366f1 !important; }
+
+/* Cloth Items */
+body.dark-mode .cloth-item-row    { background: #111827 !important; border-color: #374151 !important; }
+body.dark-mode .cloth-item-row:hover { background: #1e1b4b !important; border-color: #6366f1 !important; }
 body.dark-mode .cloth-item-row select,
-body.dark-mode .cloth-item-row input { background: #0f172a !important; border-color: #334155 !important; color: #f1f5f9 !important; }
-body.dark-mode .live-summary-card { background: #1e293b; border-color: #334155; }
-body.dark-mode .live-summary-footer { background: #0f172a; }
-body.dark-mode .live-summary-item { background: #0f172a; border-color: #334155; }
-body.dark-mode .order-summary   { background: linear-gradient(135deg, #1e293b, #0f172a); border-color: #334155; }
-body.dark-mode .card            { background: #1e293b; border-color: #334155; }
-body.dark-mode thead th         { background: #0f172a; }
-body.dark-mode tbody tr:hover   { background: #0f172a; }
-body.dark-mode .welcome-banner  { box-shadow: 0 8px 32px rgba(99,102,241,.2); }
-body.dark-mode .stat-card       { background: #1e293b; border-color: #334155; }
-body.dark-mode .income-filter   { background: #1e293b; border-color: #334155; }
-body.dark-mode .notification-card { background: #1e293b; }
-body.dark-mode .notification-card.unread { background: #1e1b4b; }
-body.dark-mode .modal-box       { background: #1e293b; }
-body.dark-mode .bill-body       { background: #1e293b; }
-body.dark-mode .bill-total-box  { background: #0f172a; border-color: #334155; }
-body.dark-mode .bill-actions    { background: #0f172a; border-color: #334155; }
-body.dark-mode .btn-secondary   { background: #0f172a; color: #94a3b8; border-color: #334155; }
-body.dark-mode .btn-add-item    { border-color: #4f46e5; color: #a5b4fc; }
+body.dark-mode .cloth-item-row input[type="number"] { background: #1f2937 !important; border-color: #374151 !important; color: #f9fafb !important; }
+body.dark-mode .btn-remove        { background: #1f2937 !important; border-color: #374151 !important; color: #9ca3af !important; }
+body.dark-mode .btn-remove:hover  { background: #450a0a !important; color: #fca5a5 !important; border-color: #ef4444 !important; }
+body.dark-mode .btn-add-item      { border-color: #4f46e5; color: #a5b4fc; }
 body.dark-mode .btn-add-item:hover { background: #1e1b4b; }
-body.dark-mode .btn-reorder     { background: linear-gradient(135deg, #1e1b4b, #1e293b) !important; }
+
+/* Live Summary */
+body.dark-mode .live-summary-card   { background: #1f2937; border-color: #374151; }
+body.dark-mode .live-summary-footer { background: #111827; border-color: #374151; }
+body.dark-mode .live-summary-item   { background: #111827; border-color: #374151; }
+body.dark-mode .live-summary-row    { color: #9ca3af; }
+body.dark-mode .live-summary-val    { color: #f9fafb; }
+body.dark-mode .live-summary-divider { background: #374151; }
+body.dark-mode .legend-title        { color: #6b7280; }
+body.dark-mode .legend-item         { color: #9ca3af; }
+
+/* Buttons */
+body.dark-mode .btn-secondary     { background: #374151; color: #d1d5db; border-color: #4b5563; }
+body.dark-mode .btn-secondary:hover { background: #4b5563; }
+body.dark-mode .btn-reorder       { background: linear-gradient(135deg, #1e1b4b, #1f2937) !important; color: #a5b4fc !important; border-color: #4f46e5 !important; }
+
+/* Forms */
+body.dark-mode .form-section      { background: #1f2937; border-color: #374151; }
+body.dark-mode .form-section h3   { color: #f9fafb; border-color: #374151; }
+body.dark-mode .form-group label  { color: #9ca3af; }
+body.dark-mode .form-group input,
+body.dark-mode .form-group textarea,
+body.dark-mode .form-group select { background: #111827; border-color: #374151; color: #f9fafb; }
+body.dark-mode .form-group input:focus,
+body.dark-mode .form-group textarea:focus,
+body.dark-mode .form-group select:focus { border-color: #6366f1; background: #1f2937; }
+
+/* Modal / Bill */
+body.dark-mode .modal-box         { background: #1f2937; }
+body.dark-mode .bill-body         { background: #1f2937; }
+body.dark-mode .bill-info-item span   { color: #9ca3af; }
+body.dark-mode .bill-info-item strong { color: #f9fafb; }
+body.dark-mode .bill-table th     { background: #111827; color: #9ca3af; border-color: #374151; }
+body.dark-mode .bill-table td     { color: #f9fafb; border-color: #374151; }
+body.dark-mode .bill-total-box    { background: #111827; border-color: #374151; }
+body.dark-mode .bill-total-row    { color: #9ca3af; }
+body.dark-mode .bill-total-row.grand { color: #f9fafb; border-color: #374151; }
+body.dark-mode .bill-actions      { background: #111827; border-color: #374151; }
+
+/* Notifications */
+body.dark-mode .notification-card        { background: #1f2937; border-color: #374151; }
+body.dark-mode .notification-card.unread { background: #1e1b4b; border-color: #4f46e5; }
+body.dark-mode .notification-card p      { color: #9ca3af; }
+body.dark-mode .notif-message            { color: #f9fafb !important; }
+body.dark-mode .notification-bar         { background: linear-gradient(135deg, #312e81, #1e1b4b); }
+
+/* Income */
+body.dark-mode .income-filter     { background: #1f2937; border-color: #374151; color: #9ca3af; }
+body.dark-mode .income-filter input { background: #111827; border-color: #374151; color: #f9fafb; }
+
+/* Page headers */
+body.dark-mode .page-header h2   { color: #f9fafb; }
+body.dark-mode .page-header p    { color: #9ca3af; }
+body.dark-mode .order-page-header-left h2 { color: #f9fafb; }
+body.dark-mode .order-page-header-left p  { color: #9ca3af; }
 
 /* ══════════════════════════════════════════════
    PAYMENT METHOD — Cash / Scan (Bill Modal)
@@ -2320,13 +2414,15 @@ body.dark-mode .btn-reorder     { background: linear-gradient(135deg, #1e1b4b, #
     color: var(--text-3);
 }
 
-/* ── Dark mode overrides ── */
-body.dark-mode .payment-method-section { background: #1e293b; border-color: #334155; }
-body.dark-mode .pay-method-btn         { background: #0f172a; border-color: #334155; }
-body.dark-mode .pay-method-btn.active  { background: #1e1b4b; border-color: var(--accent); }
-body.dark-mode .pay-method-name        { color: #f1f5f9; }
-body.dark-mode .upi-qr-box             { background: #0f172a; border-color: #4f46e5; }
-body.dark-mode .customer-payment-info  { background: #1e293b; border-color: #334155; }
+/* ── Dark mode overrides for payment ── */
+body.dark-mode .payment-method-section { background: #1f2937; border-color: #374151; }
+body.dark-mode .pay-method-btn         { background: #111827; border-color: #374151; }
+body.dark-mode .pay-method-btn.active  { background: #1e1b4b; border-color: #6366f1; }
+body.dark-mode .pay-method-name        { color: #f9fafb; }
+body.dark-mode .upi-qr-box             { background: #111827; border-color: #4f46e5; }
+body.dark-mode .customer-payment-info  { background: #1f2937; border-color: #374151; }
+body.dark-mode .customer-payment-info-text strong { color: #f9fafb; }
+body.dark-mode .customer-payment-info-text span   { color: #9ca3af; }
 
 /* ══════════════════════════════════════════════
    NEW ORDER — Payment Method Step
@@ -2463,9 +2559,251 @@ body.dark-mode .customer-payment-info  { background: #1e293b; border-color: #334
     font-size: 1.4rem;
 }
 
-/* ── Dark mode ── */
-body.dark-mode .order-pay-card          { background: #0f172a; border-color: #334155; }
+/* Date inputs in dark mode — forces browser calendar to dark */
+body.dark-mode input[type="date"],
+body.dark-mode input[type="date"].ni-input {
+    color-scheme: dark;
+    background: #111827 !important;
+    border-color: #374151 !important;
+    color: #f9fafb !important;
+}
+body.dark-mode input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+/* Income filter date input */
+body.dark-mode #incomeDate {
+    color-scheme: dark;
+    background: #111827 !important;
+    border-color: #374151 !important;
+    color: #f9fafb !important;
+}
+body.dark-mode #incomeDate::-webkit-calendar-picker-indicator { filter: invert(1); }
+
+/* Daily income stat cards */
+body.dark-mode .income-summary .stat-card { background: #1f2937; border-color: #374151; }
+body.dark-mode .income-summary .stat-icon { color: #f9fafb; }
+body.dark-mode .income-summary .stat-info h3 { color: #9ca3af; }
+body.dark-mode .income-summary .stat-info p  { color: #f9fafb; }
+
+/* Daily income orders list */
+body.dark-mode #dailyOrdersList .card { background: #1f2937; border-color: #374151; }
+body.dark-mode #dailyOrdersList thead th { background: #111827; color: #9ca3af; border-color: #374151; }
+body.dark-mode #dailyOrdersList tbody td { color: #f9fafb; border-color: #374151; }
+body.dark-mode #dailyOrdersList tbody tr:hover { background: #111827; }
+body.dark-mode .order-pay-card          { background: #111827; border-color: #374151; }
 body.dark-mode .order-pay-card:hover    { background: #1e1b4b; }
-body.dark-mode .order-pay-card.active   { background: #1e1b4b; border-color: var(--accent); }
-body.dark-mode .order-pay-info strong   { color: #f1f5f9; }
+body.dark-mode .order-pay-card.active   { background: #1e1b4b; border-color: #6366f1; }
+body.dark-mode .order-pay-info strong   { color: #f9fafb; }
+body.dark-mode .order-pay-info span     { color: #9ca3af; }
 body.dark-mode .order-upi-info          { background: #1e1b4b; border-color: #4f46e5; }
+
+/* ══════════════════════════════════════════════
+   SMOOTH 120Hz UI — GPU-accelerated animations
+   ══════════════════════════════════════════════ */
+
+/* Force GPU compositing on interactive elements */
+.nav-item,
+.btn, .btn-primary, .btn-secondary, .btn-danger, .btn-warning, .btn-success,
+.stat-card, .order-card, .notification-card, .feature-card, .price-card,
+.portal-card, .sidebar, .modal-box, .order-card-section,
+.btn-place-order, .btn-add-item, .btn-remove, .btn-logout,
+.dark-toggle, .notif-btn, .hamburger-btn,
+.cloth-item-row, .live-summary-item, .order-pay-card, .pay-method-btn {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+/* Sidebar slide — GPU accelerated */
+.sidebar {
+    will-change: left, transform;
+    transform: translateZ(0);
+}
+
+/* Modal — GPU accelerated */
+.modal-box {
+    will-change: transform, opacity;
+}
+
+/* ── Hover lift effects ── */
+.stat-card:hover {
+    transform: translateY(-4px) translateZ(0);
+    transition: transform .15s cubic-bezier(.34,1.56,.64,1),
+                box-shadow .15s ease;
+}
+
+.order-card:hover {
+    transform: translateY(-3px) translateZ(0);
+    transition: transform .15s cubic-bezier(.34,1.56,.64,1),
+                box-shadow .15s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px) translateZ(0);
+    transition: transform .12s cubic-bezier(.34,1.56,.64,1),
+                box-shadow .12s ease,
+                background-color .12s ease;
+}
+
+.btn:active {
+    transform: translateY(0) scale(0.98) translateZ(0);
+    transition: transform .08s ease;
+}
+
+.btn-place-order:hover {
+    transform: translateY(-3px) translateZ(0);
+    transition: transform .15s cubic-bezier(.34,1.56,.64,1),
+                box-shadow .15s ease;
+}
+
+.btn-place-order:active {
+    transform: translateY(-1px) scale(0.99) translateZ(0);
+}
+
+.nav-item:hover {
+    transform: translateX(4px) translateZ(0);
+    transition: transform .15s cubic-bezier(.4,0,.2,1),
+                background-color .15s ease,
+                color .15s ease;
+}
+
+.portal-card:hover {
+    transform: translateX(6px) translateZ(0);
+    transition: transform .15s cubic-bezier(.34,1.56,.64,1),
+                box-shadow .15s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px) translateZ(0);
+    transition: transform .15s cubic-bezier(.34,1.56,.64,1),
+                box-shadow .15s ease;
+}
+
+.price-card:hover {
+    transform: translateY(-5px) translateZ(0);
+    transition: transform .15s cubic-bezier(.34,1.56,.64,1),
+                box-shadow .15s ease;
+}
+
+/* ── Page section transitions ── */
+.content-section {
+    animation: none;
+}
+.content-section.active {
+    animation: sectionFadeIn .2s cubic-bezier(.4,0,.2,1) forwards;
+}
+
+@keyframes sectionFadeIn {
+    from { opacity: 0; transform: translateY(8px) translateZ(0); }
+    to   { opacity: 1; transform: translateY(0) translateZ(0); }
+}
+
+/* ── Card entrance animations ── */
+.stat-card {
+    animation: cardSlideUp .25s cubic-bezier(.34,1.56,.64,1) both;
+}
+.stat-card:nth-child(1) { animation-delay: .03s; }
+.stat-card:nth-child(2) { animation-delay: .06s; }
+.stat-card:nth-child(3) { animation-delay: .09s; }
+.stat-card:nth-child(4) { animation-delay: .12s; }
+
+@keyframes cardSlideUp {
+    from { opacity: 0; transform: translateY(16px) translateZ(0); }
+    to   { opacity: 1; transform: translateY(0) translateZ(0); }
+}
+
+/* ── Input focus ripple ── */
+.ni-input, .form-group input, .form-group textarea, .form-group select {
+    transition: border-color .15s ease,
+                box-shadow .15s ease,
+                background-color .15s ease !important;
+}
+
+/* ── Smooth scrolling ── */
+html {
+    scroll-behavior: smooth;
+}
+.sidebar-nav,
+.page-content,
+.modal-box,
+.order-timeline {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ── Toast slide in ── */
+#toastContainer > div {
+    animation: toastSlide .2s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+
+@keyframes toastSlide {
+    from { opacity: 0; transform: translateX(60px) scale(.9) translateZ(0); }
+    to   { opacity: 1; transform: translateX(0) scale(1) translateZ(0); }
+}
+
+/* ── Sidebar overlay fade ── */
+.sidebar-overlay {
+    transition: opacity .2s ease;
+    opacity: 0;
+}
+.sidebar-overlay.active {
+    opacity: 1;
+}
+
+/* ── Dark mode toggle spin ── */
+.dark-toggle:hover {
+    transform: rotate(20deg) scale(1.1) translateZ(0);
+    transition: transform .2s cubic-bezier(.34,1.56,.64,1);
+}
+
+/* ── Notification badge pulse ── */
+.notif-badge {
+    animation: badgePulse 2s cubic-bezier(.4,0,.6,1) infinite;
+}
+@keyframes badgePulse {
+    0%, 100% { transform: scale(1); }
+    50%       { transform: scale(1.2); }
+}
+
+/* ── Order card footer buttons ── */
+.order-card-footer .btn {
+    transition: transform .12s cubic-bezier(.34,1.56,.64,1),
+                background-color .12s ease,
+                box-shadow .12s ease;
+}
+
+/* ── Cloth item row entrance ── */
+.cloth-item-row {
+    animation: itemSlideIn .2s cubic-bezier(.34,1.56,.64,1) both !important;
+}
+
+/* ── Welcome banner shimmer ── */
+.welcome-banner::before {
+    animation: shimmer 4s ease-in-out infinite;
+}
+@keyframes shimmer {
+    0%, 100% { transform: translateX(0) translateY(0); opacity: .07; }
+    50%       { transform: translateX(20px) translateY(-10px); opacity: .12; }
+}
+
+/* ── Smooth page transitions for sections ── */
+.orders-grid .order-card {
+    animation: cardSlideUp .2s cubic-bezier(.34,1.56,.64,1) both;
+}
+.orders-grid .order-card:nth-child(1) { animation-delay: .02s; }
+.orders-grid .order-card:nth-child(2) { animation-delay: .05s; }
+.orders-grid .order-card:nth-child(3) { animation-delay: .08s; }
+.orders-grid .order-card:nth-child(4) { animation-delay: .11s; }
+.orders-grid .order-card:nth-child(5) { animation-delay: .14s; }
+.orders-grid .order-card:nth-child(6) { animation-delay: .17s; }
+
+/* ── Reduce motion for accessibility ── */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+    }
+}

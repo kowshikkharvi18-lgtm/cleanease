@@ -30,10 +30,43 @@ let orders = [];
 let notifications = [];
 let currentBillOrder = null;
 
+// ── Date formatter — shows "18 Apr 2026" instead of "2026-04-18" ──
+function fmtDate(d) {
+    if (!d) return '—';
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const parts = d.split('-');
+    if (parts.length !== 3) return d;
+    return `${parseInt(parts[2])} ${months[parseInt(parts[1])-1]} ${parts[0]}`;
+}
+
 // ── API helper ──
+let _apiCallCount = 0;
+function _showLoader() {
+    _apiCallCount++;
+    let el = document.getElementById('globalLoader');
+    if (!el) {
+        el = document.createElement('div');
+        el.id = 'globalLoader';
+        el.style.cssText = 'position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#6366f1,#00bcd4);z-index:99999;transform-origin:left;animation:loaderBar 1.2s ease-in-out infinite;';
+        document.body.appendChild(el);
+        const style = document.createElement('style');
+        style.textContent = '@keyframes loaderBar{0%{transform:scaleX(0)}50%{transform:scaleX(0.7)}100%{transform:scaleX(1)}}';
+        document.head.appendChild(style);
+    }
+    el.style.display = 'block';
+}
+function _hideLoader() {
+    _apiCallCount = Math.max(0, _apiCallCount - 1);
+    if (_apiCallCount === 0) {
+        const el = document.getElementById('globalLoader');
+        if (el) el.style.display = 'none';
+    }
+}
+
 async function api(path, method = 'GET', body = null) {
     const opts = { method, headers: { 'Content-Type': 'application/json' } };
     if (body) opts.body = JSON.stringify(body);
+    _showLoader();
     try {
         const res = await fetch(API + path, opts);
         if (!res.ok) {
@@ -45,6 +78,8 @@ async function api(path, method = 'GET', body = null) {
     } catch (err) {
         console.error(`API ${method} ${path} network error:`, err);
         return { success: false, message: 'Cannot connect to server. Is it running?' };
+    } finally {
+        _hideLoader();
     }
 }
 
@@ -55,7 +90,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function checkAuth() {
     const user = sessionStorage.getItem('user');
-    if (!user) { window.location.href = 'customer-login.html'; return; }
+    if (!user) {
+        // Redirect to appropriate login based on URL hint
+        const isAdmin = window.location.search.includes('admin') ||
+                        document.referrer.includes('admin-login');
+        window.location.href = isAdmin ? 'admin-login.html' : 'customer-login.html';
+        return;
+    }
     currentUser = JSON.parse(user);
     document.getElementById('userName').textContent = currentUser.name;
     const roleEl = document.getElementById('userRole');
@@ -222,7 +263,7 @@ async function loadDashboardData() {
                                 return `<div class="order-card">
                                     <div class="order-card-header"><h3>${o.id}</h3>${statusBadge(o.status)}</div>
                                     <div class="order-card-body">
-                                        <p><strong>Date</strong><span>${o.order_date}</span></p>
+                                        <p><strong>Date</strong><span>${fmtDate(o.order_date)}</span></p>
                                         <p><strong>Items</strong><span>${count}</span></p>
                                         <p><strong>Total</strong><span>₹${parseFloat(o.total).toFixed(2)}</span></p>
                                         <p><strong>Payment</strong><span class="badge badge-${(o.payment_status||'unpaid').toLowerCase()}">${o.payment_status||'Unpaid'}</span></p>
@@ -255,16 +296,24 @@ function statusBadge(status) {
     return `<span class="badge" style="${s};padding:3px 10px;border-radius:99px;font-size:0.78rem;font-weight:700;">${status}</span>`;
 }
 
-function loadOrdersTable() {
+function loadOrdersTable(filter = '') {
     const tbody = document.querySelector('#ordersTable tbody');
     if (!orders.length) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:2rem;color:#5f6368;">No orders yet</td></tr>'; return; }
-    tbody.innerHTML = orders.map(o => {
+    const filtered = filter
+        ? orders.filter(o =>
+            o.id.toLowerCase().includes(filter) ||
+            o.customer_name.toLowerCase().includes(filter) ||
+            o.customer_phone.includes(filter) ||
+            o.status.toLowerCase().includes(filter))
+        : orders;
+    if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:2rem;color:#5f6368;">No orders match your search</td></tr>'; return; }
+    tbody.innerHTML = filtered.map(o => {
         const count = (o.items||[]).reduce((s,i) => s + i.quantity, 0);
         return `<tr>
             <td><strong>${o.id}</strong></td>
             <td>${o.customer_name}</td>
-            <td>${o.order_date}</td>
-            <td>${o.delivery_date}</td>
+            <td>${fmtDate(o.order_date)}</td>
+            <td>${fmtDate(o.delivery_date)}</td>
             <td>${count} items</td>
             <td><strong>₹${parseFloat(o.total).toFixed(2)}</strong></td>
             <td>
@@ -343,8 +392,8 @@ function loadCustomerOrders() {
             </div>
             ${timelineHTML}
             <div class="order-card-body">
-                <p><strong>Order Date</strong><span>${o.order_date}</span></p>
-                <p><strong>Delivery Date</strong><span>${o.delivery_date}</span></p>
+                <p><strong>Order Date</strong><span>${fmtDate(o.order_date)}</span></p>
+                <p><strong>Delivery Date</strong><span>${fmtDate(o.delivery_date)}</span></p>
                 <p><strong>Items</strong><span>${count} items</span></p>
                 <p><strong>Total</strong><span>₹${parseFloat(o.total).toFixed(2)}</span></p>
                 <p><strong>Payment</strong><span class="badge badge-${(o.payment_status||'unpaid').toLowerCase()}">${o.payment_status||'Unpaid'}</span></p>
@@ -563,6 +612,14 @@ async function refreshSection(section) {
         } else if (section === 'notifications') {
             notifications = await api('/notifications?phone=' + currentUser.phone);
             loadCustomerNotifications();
+            // Mark all unread as read
+            const unread = notifications.filter(n => !n.read_status);
+            for (const n of unread) await api('/notifications/' + n.id + '/read', 'PUT');
+            if (unread.length) {
+                notifications = await api('/notifications?phone=' + currentUser.phone);
+                const badge = document.getElementById('notifBadge');
+                if (badge) badge.style.display = 'none';
+            }
         } else if (section === 'profile') {
             loadProfileForm();
         }
@@ -770,8 +827,8 @@ function viewBill(orderId) {
 
     document.getElementById('billNo').textContent           = 'BILL-' + order.id;
     document.getElementById('billOrderId').textContent      = order.id;
-    document.getElementById('billDate').textContent         = order.order_date;
-    document.getElementById('billDeliveryDate').textContent = order.delivery_date;
+    document.getElementById('billDate').textContent         = fmtDate(order.order_date);
+    document.getElementById('billDeliveryDate').textContent = fmtDate(order.delivery_date);
     document.getElementById('billCustomer').textContent     = order.customer_name;
     document.getElementById('billPhone').textContent        = order.customer_phone;
     document.getElementById('billAddress').textContent      = order.customer_address;
