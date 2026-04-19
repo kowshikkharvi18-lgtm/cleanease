@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CleanEase - Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="dashboard-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand">
+                <span class="brand-icon">🧺</span>
+                <div>
+                    <div class="brand-name">CleanEase</div>
+                    <div class="brand-sub">Laundry Service</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-user">
+            <div class="user-avatar" id="userAvatar">U</div>
+            <div class="user-info">
+                <div class="user-name" id="userName">User</div>
+                <span class="user-role" id="userRole">Role</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav" id="mainNav"></nav>
+
+        <div class="sidebar-footer">
+            <button class="btn-logout" onclick="logout()">🚪 Logout</button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+        <!-- Notification Bar -->
+        <div id="notificationBar" class="notification-bar" style="display:none;">
+            <span class="notif-icon">🔔</span>
+            <span id="notifBarMessage"></span>
+            <button onclick="closeNotification()" class="notification-close">×</button>
+        </div>
+
+        <!-- Top Bar -->
+        <div class="topbar">
+            <div class="topbar-title">
+                <h2 id="pageTitle">Dashboard</h2>
+                <p id="pageSubtitle">Welcome back!</p>
+            </div>
+            <div class="topbar-right">
+                <!-- Live Clock -->
+                <div class="topbar-clock" id="topbarClock">
+                    <span class="clock-time" id="clockTime">--:--</span>
+                    <span class="clock-date" id="clockDate">---</span>
+                </div>
+                <!-- Dark Mode Toggle -->
+                <button class="dark-toggle" id="darkToggle" onclick="toggleDarkMode()" title="Toggle dark mode">
+                    <span id="darkIcon">🌙</span>
+                </button>
+                <!-- Notifications -->
+                <button class="notif-btn" id="notifBtn" onclick="handleNotifClick()" title="Notifications">
+                    🔔
+                    <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Page Content -->
+        <div class="page-content">
+
+            <!-- Overview Section -->
+            <section id="overview-section" class="content-section active">
+
+                <!-- Welcome Banner (injected by JS, but fallback here) -->
+                <div class="welcome-banner" id="welcomeBanner">
+                    <div class="welcome-text">
+                        <h2 id="welcomeHeading">👋 Welcome back!</h2>
+                        <p id="welcomeSubtext">Here's what's happening with your laundry today.</p>
+                    </div>
+                    <button class="welcome-action" id="welcomeActionBtn" onclick="handleWelcomeAction()">
+                        ➕ New Order
+                    </button>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon-wrap">📋</div>
+                        <div class="stat-info">
+                            <h3 id="stat1Title">Orders</h3>
+                            <p id="stat1Value">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon-wrap">⏳</div>
+                        <div class="stat-info">
+                            <h3 id="stat2Title">Pending</h3>
+                            <p id="stat2Value">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon-wrap">✅</div>
+                        <div class="stat-info">
+                            <h3 id="stat3Title">Completed</h3>
+                            <p id="stat3Value">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon-wrap">💰</div>
+                        <div class="stat-info">
+                            <h3 id="stat4Title">Revenue</h3>
+                            <p id="stat4Value">₹0</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="overviewExtra"></div>
+            </section>
+
+            <!-- Customer: New Order -->
+            <section id="newOrder-section" class="content-section customer-only">
+
+                <!-- Order Page Header -->
+                <div class="order-page-header">
+                    <div class="order-page-header-left">
+                        <div class="order-page-icon">🧺</div>
+                        <div>
+                            <h2>New Laundry Order</h2>
+                            <p>Fill in your details and add cloth items below</p>
+                        </div>
+                    </div>
+                    <div class="order-steps">
+                        <div class="order-step active" id="step1Indicator">
+                            <div class="step-dot">1</div>
+                            <span>Details</span>
+                        </div>
+                        <div class="order-step-line"></div>
+                        <div class="order-step" id="step2Indicator">
+                            <div class="step-dot">2</div>
+                            <span>Items</span>
+                        </div>
+                        <div class="order-step-line"></div>
+                        <div class="order-step" id="step3Indicator">
+                            <div class="step-dot">3</div>
+                            <span>Confirm</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Two-column layout: form + live summary -->
+                <div class="new-order-layout">
+
+                    <!-- LEFT: Form -->
+                    <div class="new-order-form-col">
+
+                        <!-- Step 1: Customer Details -->
+                        <div class="order-card-section" id="orderStep1">
+                            <div class="order-card-section-header">
+                                <div class="section-num">1</div>
+                                <div>
+                                    <h3>Customer Details</h3>
+                                    <p>Your contact & pickup information</p>
+                                </div>
+                            </div>
+                            <div class="order-card-section-body">
+                                <div class="form-row">
+                                    <div class="form-group ni-group">
+                                        <label class="ni-label"><span class="ni-icon">👤</span> Full Name</label>
+                                        <input type="text" id="orderName" class="ni-input" placeholder="e.g. Kowshik" required>
+                                    </div>
+                                    <div class="form-group ni-group">
+                                        <label class="ni-label"><span class="ni-icon">📱</span> Mobile Number</label>
+                                        <input type="tel" id="orderPhone" class="ni-input" placeholder="e.g. 9876543210" required>
+                                    </div>
+                                </div>
+                                <div class="form-group ni-group">
+                                    <label class="ni-label"><span class="ni-icon">📍</span> Pickup Address</label>
+                                    <textarea id="orderAddress" class="ni-input ni-textarea" rows="3" placeholder="House no., Street, Area, City..." required></textarea>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group ni-group">
+                                        <label class="ni-label"><span class="ni-icon">📅</span> Order Date</label>
+                                        <input type="date" id="orderDate" class="ni-input" required>
+                                        <span class="date-msg" id="orderDateMsg"></span>
+                                    </div>
+                                    <div class="form-group ni-group">
+                                        <label class="ni-label"><span class="ni-icon">🚚</span> Delivery Date</label>
+                                        <input type="date" id="deliveryDate" class="ni-input" required>
+                                        <span class="date-msg" id="deliveryDateMsg"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Cloth Items -->
+                        <div class="order-card-section" id="orderStep2">
+                            <div class="order-card-section-header">
+                                <div class="section-num">2</div>
+                                <div>
+                                    <h3>Cloth Items</h3>
+                                    <p>Add the clothes you want cleaned</p>
+                                </div>
+                            </div>
+                            <div class="order-card-section-body">
+                                <div class="cloth-items-header">
+                                    <span class="cloth-col-label">Cloth Type</span>
+                                    <span class="cloth-col-label">Service</span>
+                                    <span class="cloth-col-label">Qty</span>
+                                    <span class="cloth-col-label"></span>
+                                </div>
+                                <div id="clothItemsContainer"></div>
+                                <button type="button" onclick="addClothItem()" class="btn-add-item">
+                                    <span class="btn-add-item-icon">＋</span>
+                                    Add Another Item
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Payment Method -->
+                        <div class="order-card-section" id="orderStep3Card">
+                            <div class="order-card-section-header">
+                                <div class="section-num" style="background:linear-gradient(135deg,#10b981,#059669);">3</div>
+                                <div>
+                                    <h3>Payment Method</h3>
+                                    <p>Choose how you'd like to pay</p>
+                                </div>
+                            </div>
+                            <div class="order-card-section-body">
+                                <div class="order-payment-options">
+
+                                    <!-- Cash on Delivery -->
+                                    <label class="order-pay-option" id="payOptCOD">
+                                        <input type="radio" name="orderPayMethod" value="Cash" checked
+                                               onchange="selectOrderPayMethod('Cash')">
+                                        <div class="order-pay-card active" id="payCardCOD">
+                                            <div class="order-pay-icon">💵</div>
+                                            <div class="order-pay-info">
+                                                <strong>Cash on Delivery</strong>
+                                                <span>Pay in cash when your order is delivered</span>
+                                            </div>
+                                            <div class="order-pay-check" id="payCheckCOD">✓</div>
+                                        </div>
+                                    </label>
+
+                                    <!-- Scan / UPI -->
+                                    <label class="order-pay-option" id="payOptScan">
+                                        <input type="radio" name="orderPayMethod" value="Scan"
+                                               onchange="selectOrderPayMethod('Scan')">
+                                        <div class="order-pay-card" id="payCardScan">
+                                            <div class="order-pay-icon">📱</div>
+                                            <div class="order-pay-info">
+                                                <strong>Scan / UPI</strong>
+                                                <span>Pay via UPI, PhonePe, GPay, Paytm</span>
+                                            </div>
+                                            <div class="order-pay-check" id="payCheckScan"></div>
+                                        </div>
+                                    </label>
+
+                                </div>
+
+                                <!-- UPI info shown when Scan selected -->
+                                <div class="order-upi-info" id="orderUpiInfo" style="display:none;">
+                                    <div class="order-upi-left">
+                                        <div class="order-upi-pulse">📲</div>
+                                        <div>
+                                            <strong>Pay via UPI at delivery</strong>
+                                            <span>UPI ID: <b>cleanease@upi</b></span>
+                                        </div>
+                                    </div>
+                                    <div class="order-upi-apps">
+                                        <span title="PhonePe">🟣</span>
+                                        <span title="GPay">🔵</span>
+                                        <span title="Paytm">🔷</span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Place Order Button -->
+                        <form id="orderForm">
+                            <button type="submit" class="btn-place-order">
+                                <span class="btn-place-order-icon">🛒</span>
+                                <span>Place Order</span>
+                                <span class="btn-place-order-arrow">→</span>
+                            </button>
+                        </form>
+
+                    </div><!-- end form col -->
+
+                    <!-- RIGHT: Live Summary -->
+                    <div class="new-order-summary-col">
+                        <div class="live-summary-card">
+                            <div class="live-summary-header">
+                                <span>🧾</span>
+                                <h3>Order Summary</h3>
+                            </div>
+                            <div class="live-summary-body">
+                                <div class="live-summary-empty" id="summaryEmpty">
+                                    <div class="summary-empty-icon">👕</div>
+                                    <p>Add items to see your order summary</p>
+                                </div>
+                                <div id="liveSummaryItems" class="live-summary-items"></div>
+                            </div>
+                            <div class="live-summary-footer">
+                                <div class="live-summary-row">
+                                    <span>Total Items</span>
+                                    <span class="live-summary-val" id="totalItems">0</span>
+                                </div>
+                                <div class="live-summary-divider"></div>
+                                <div class="live-summary-row live-summary-total">
+                                    <span>Total Amount</span>
+                                    <span>₹<span id="totalAmount">0.00</span></span>
+                                </div>
+                                <div class="live-summary-divider"></div>
+                                <div class="live-summary-row">
+                                    <span>Payment</span>
+                                    <span class="live-summary-val" id="summaryPayMethod">💵 Cash on Delivery</span>
+                                </div>
+                            </div>
+                            <!-- Service legend -->
+                            <div class="service-legend">
+                                <div class="legend-title">Service Multipliers</div>
+                                <div class="legend-item"><span class="legend-dot dot-wash"></span>Wash — 1×</div>
+                                <div class="legend-item"><span class="legend-dot dot-dry"></span>Dry Wash — 1.5×</div>
+                                <div class="legend-item"><span class="legend-dot dot-all"></span>All Services — 2×</div>
+                            </div>
+                        </div>
+                    </div><!-- end summary col -->
+
+                </div><!-- end new-order-layout -->
+            </section>
+
+            <!-- Customer: Order History -->
+            <section id="orderHistory-section" class="content-section customer-only">
+                <div class="page-header">
+                    <div><h2>Order History</h2><p>All your past and current orders</p></div>
+                </div>
+                <div id="ordersList"></div>
+            </section>
+
+            <!-- Customer: Notifications -->
+            <section id="notifications-section" class="content-section customer-only">
+                <div class="page-header">
+                    <div><h2>My Notifications</h2><p>Messages from CleanEase admin</p></div>
+                </div>
+                <div id="customerNotificationsList"></div>
+            </section>
+
+            <!-- Customer: My Profile -->
+            <section id="profile-section" class="content-section customer-only">
+                <div class="page-header">
+                    <div><h2>My Profile</h2><p>Update your personal details</p></div>
+                </div>
+                <div class="order-card" style="max-width:600px;">
+                    <div class="order-card-section">
+                        <div class="order-card-section-header">
+                            <div class="section-num">👤</div>
+                            <div>
+                                <h3>Personal Information</h3>
+                                <p>Changes will be saved to your account</p>
+                            </div>
+                        </div>
+                        <div class="order-card-section-body">
+                            <div class="form-row">
+                                <div class="form-group ni-group">
+                                    <label class="ni-label"><span class="ni-icon">👤</span> Full Name</label>
+                                    <input type="text" id="profileName" class="ni-input" placeholder="Your full name" required>
+                                </div>
+                                <div class="form-group ni-group">
+                                    <label class="ni-label"><span class="ni-icon">📱</span> Mobile Number</label>
+                                    <input type="tel" id="profilePhone" class="ni-input" placeholder="10-digit mobile number" required>
+                                </div>
+                            </div>
+                            <div class="form-group ni-group">
+                                <label class="ni-label"><span class="ni-icon">📍</span> Pickup Address</label>
+                                <textarea id="profileAddress" class="ni-input ni-textarea" rows="3" placeholder="House no., Street, Area, City..."></textarea>
+                            </div>
+                            <div class="form-group ni-group">
+                                <label class="ni-label"><span class="ni-icon">🔒</span> New Password <span style="font-weight:400;color:#888;">(leave blank to keep current)</span></label>
+                                <input type="password" id="profilePassword" class="ni-input" placeholder="Enter new password">
+                            </div>
+                            <button type="button" onclick="saveProfile()" class="btn btn-primary" style="width:100%;margin-top:8px;">💾 Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Admin: Cloth Types -->
+            <section id="clothTypes-section" class="content-section admin-only">
+                <div class="page-header">
+                    <div><h2>Cloth Types & Pricing</h2><p>Manage cloth types and set prices</p></div>
+                    <button onclick="showAddClothType()" class="btn btn-primary">+ Add Cloth Type</button>
+                </div>
+
+                <div id="addClothTypeForm" style="display:none;" class="form-section" style="margin-bottom:1.5rem;">
+                    <h3>Add New Cloth Type</h3>
+                    <form id="clothTypeForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Cloth Type Name *</label>
+                                <input type="text" id="clothTypeName" placeholder="e.g. Jacket" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Price per Item (₹) *</label>
+                                <input type="number" id="clothTypePrice" placeholder="e.g. 80" step="0.01" required>
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:0.75rem;">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button type="button" onclick="hideAddClothType()" class="btn btn-secondary">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <div class="table-wrapper">
+                        <table id="clothTypesTable">
+                            <thead><tr><th>Cloth Type</th><th>Price per Item</th><th>Actions</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Admin: Manage Orders -->
+            <section id="manageOrders-section" class="content-section admin-only">
+                <div class="page-header">
+                    <div><h2>Manage Orders</h2><p>View and update all customer orders</p></div>
+                </div>
+                <div class="card">
+                    <div class="table-wrapper">
+                        <table id="ordersTable">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th><th>Customer</th><th>Order Date</th>
+                                    <th>Delivery Date</th><th>Items</th><th>Total</th>
+                                    <th>Status</th><th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Admin: Notifications -->
+            <section id="adminNotifications-section" class="content-section admin-only">
+                <div class="page-header">
+                    <div><h2>Send Notifications</h2><p>Send messages to customers</p></div>
+                </div>
+                <div class="form-section" style="max-width:600px;">
+                    <h3>📨 New Notification</h3>
+                    <form id="notificationForm">
+                        <div class="form-group">
+                            <label>Select Customer *</label>
+                            <select id="notificationCustomer" required>
+                                <option value="">Select a customer</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Message *</label>
+                            <textarea id="notificationMessage" rows="4" placeholder="Type your message here..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send Notification</button>
+                    </form>
+                </div>
+                <div style="margin-top:2rem;">
+                    <h3 style="font-size:1rem;font-weight:700;margin-bottom:1rem;">Notification History</h3>
+                    <button onclick="debugNotifications()" class="btn btn-secondary btn-sm" style="margin-bottom:1rem;">🐛 Debug</button>
+                    <div id="notificationHistory"></div>
+                </div>
+            </section>
+
+            <!-- Admin: Daily Income -->
+            <section id="income-section" class="content-section admin-only">
+                <div class="page-header">
+                    <div><h2>Daily Income Report</h2><p>Track revenue by date</p></div>
+                </div>
+                <div class="income-filter">
+                    <label>📅 Select Date:</label>
+                    <input type="date" id="incomeDate" onchange="loadDailyIncome()" max="">
+                </div>
+                <div class="income-summary stats-grid">
+                    <div class="stat-card"><div class="stat-icon">📦</div><div class="stat-info"><h3>Total Orders</h3><p id="dailyOrders">0</p></div></div>
+                    <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-info"><h3>Income Received</h3><p id="dailyIncome">₹0.00</p></div></div>
+                    <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-info"><h3>Paid</h3><p id="dailyPaid">₹0.00</p></div></div>
+                    <div class="stat-card"><div class="stat-icon">⏳</div><div class="stat-info"><h3>Pending (Unpaid)</h3><p id="dailyUnpaid">₹0.00</p></div></div>
+                </div>
+                <div id="dailyOrdersList"></div>
+            </section>
+
+            <!-- Admin: Customers -->
+            <section id="customers-section" class="content-section admin-only">
+                <div class="page-header">
+                    <div><h2>Manage Customers</h2><p>View all registered customers</p></div>
+                </div>
+                <div class="card">
+                    <div class="table-wrapper">
+                        <table id="customersTable">
+                            <thead><tr><th>Name</th><th>Phone</th><th>Address</th><th>Total Orders</th><th>Status</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </div><!-- end page-content -->
+    </div><!-- end main-content -->
+</div><!-- end dashboard-layout -->
+
+<!-- Billing Modal -->
+<div id="billingModal" class="modal">
+    <div class="modal-box">
+        <div class="bill-header">
+            <h2>🧺 CleanEase</h2>
+            <p>Online Laundry Service &nbsp;|&nbsp; (555) 123-4567</p>
+        </div>
+        <div class="bill-body">
+            <div class="bill-info-grid">
+                <div class="bill-info-item"><span>Bill No</span><strong id="billNo"></strong></div>
+                <div class="bill-info-item"><span>Order ID</span><strong id="billOrderId"></strong></div>
+                <div class="bill-info-item"><span>Order Date</span><strong id="billDate"></strong></div>
+                <div class="bill-info-item"><span>Delivery Date</span><strong id="billDeliveryDate"></strong></div>
+                <div class="bill-info-item"><span>Customer</span><strong id="billCustomer"></strong></div>
+                <div class="bill-info-item"><span>Phone</span><strong id="billPhone"></strong></div>
+            </div>
+            <div class="bill-info-item" style="margin-bottom:1rem;"><span>Address</span><strong id="billAddress"></strong></div>
+            <hr>
+            <table class="bill-table">
+                <thead><tr><th>Item</th><th>Service</th><th>Qty</th><th>Price</th><th>Amount</th></tr></thead>
+                <tbody id="billItems"></tbody>
+            </table>
+            <div class="bill-total-box">
+                <div class="bill-total-row grand"><span>Total Amount</span><span>₹<span id="billTotal"></span></span></div>
+                <div class="bill-total-row"><span>Payment Status</span><span id="billPaymentStatus"></span></div>
+                <div class="bill-total-row" id="billMethodRow"><span>Payment Method</span><span id="billMethodDisplay"></span></div>
+            </div>
+
+            <!-- Payment Method Selector (admin only) -->
+            <div class="payment-method-section" id="paymentMethodSection" style="display:none;">
+                <div class="payment-method-label">Select Payment Method</div>
+                <div class="payment-method-options">
+                    <button class="pay-method-btn active" id="payMethodCash" onclick="selectPayMethod('Cash')">
+                        <span class="pay-method-icon">💵</span>
+                        <span class="pay-method-name">Cash</span>
+                        <span class="pay-method-check" id="checkCash">✓</span>
+                    </button>
+                    <button class="pay-method-btn" id="payMethodScan" onclick="selectPayMethod('Scan')">
+                        <span class="pay-method-icon">📱</span>
+                        <span class="pay-method-name">Scan / UPI</span>
+                        <span class="pay-method-check" id="checkScan"></span>
+                    </button>
+                </div>
+                <!-- UPI QR placeholder shown when Scan is selected -->
+                <div class="upi-qr-box" id="upiQrBox" style="display:none;">
+                    <div class="upi-qr-inner">
+                        <div class="upi-qr-icon">📲</div>
+                        <div class="upi-qr-text">
+                            <strong>Scan to Pay</strong>
+                            <span>UPI ID: cleanease@upi</span>
+                        </div>
+                    </div>
+                    <div class="upi-amount" id="upiAmount">₹0.00</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bill-actions">
+            <button onclick="printBill()" class="btn btn-primary">🖨️ Print</button>
+            <button onclick="markAsPaid()" class="btn btn-success" id="markPaidBtn" style="display:none;">✅ Mark as Paid</button>
+            <button onclick="markAsUnpaid()" class="btn btn-warning" id="markUnpaidBtn" style="display:none;">↩️ Mark Unpaid</button>
+            <button onclick="closeBilling()" class="btn btn-secondary" style="margin-left:auto;">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- Confetti Canvas -->
+<canvas id="confettiCanvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;display:none;"></canvas>
+
+<!-- Toast Container -->
+<div id="toastContainer" style="position:fixed;bottom:28px;right:28px;z-index:9998;display:flex;flex-direction:column;gap:10px;"></div>
+
+<!-- Set income date max to today immediately -->
+<script>
+    (function() {
+        var today = new Date().toISOString().split('T')[0];
+        var el = document.getElementById('incomeDate');
+        if (el) { el.max = today; }
+    })();
+</script>
+
+<script src="dashboard.js"></script>
+</body>
+</html>

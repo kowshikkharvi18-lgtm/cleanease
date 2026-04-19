@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CleanEase - Customer Portal</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; }
+
+        .cl-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 60%, #00bcd4 100%);
+        }
+
+        .cl-card {
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.18);
+            width: 100%;
+            max-width: 460px;
+            overflow: hidden;
+        }
+
+        /* Banner */
+        .cl-banner {
+            background: linear-gradient(135deg, #1a73e8, #00bcd4);
+            padding: 32px 32px 24px;
+            text-align: center;
+            color: #fff;
+        }
+        .cl-banner .logo { font-size: 2.4rem; margin-bottom: 6px; }
+        .cl-banner h1    { margin: 0; font-size: 1.5rem; font-weight: 700; }
+        .cl-banner p     { margin: 4px 0 0; font-size: 0.88rem; opacity: .85; }
+
+        /* Tabs */
+        .cl-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: #f0f4f8;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .cl-tab {
+            padding: 14px;
+            border: none;
+            background: transparent;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #888;
+            cursor: pointer;
+            transition: all .2s;
+            position: relative;
+        }
+        .cl-tab.active { color: #1a73e8; background: #fff; }
+        .cl-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 20%; right: 20%;
+            height: 3px;
+            background: #1a73e8;
+            border-radius: 3px 3px 0 0;
+        }
+
+        /* Panels */
+        .cl-panel { display: none; padding: 28px 32px 24px; }
+        .cl-panel.active { display: block; }
+        .cl-panel h2  { margin: 0 0 4px; font-size: 1.25rem; color: #1a1a2e; }
+        .cl-panel .sub { font-size: 0.82rem; color: #888; margin: 0 0 22px; }
+
+        /* Fields */
+        .fg { margin-bottom: 16px; }
+        .fg label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+        .fg input, .fg textarea {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1.5px solid #dde3ec;
+            border-radius: 10px;
+            font-size: 0.93rem;
+            color: #1a1a2e;
+            background: #f8fafc;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color .2s, box-shadow .2s;
+        }
+        .fg input:focus, .fg textarea:focus {
+            border-color: #1a73e8;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(26,115,232,.1);
+        }
+        .fg textarea { resize: none; }
+
+        /* Password */
+        .pw-wrap { position: relative; }
+        .pw-wrap input { padding-right: 42px; }
+        .pw-eye {
+            position: absolute; right: 12px; top: 50%;
+            transform: translateY(-50%);
+            background: none; border: none;
+            cursor: pointer; font-size: .95rem; padding: 0;
+        }
+        .pw-track {
+            height: 4px; background: #e8edf2;
+            border-radius: 99px; margin-top: 7px; overflow: hidden;
+        }
+        .pw-fill {
+            height: 100%; width: 0; border-radius: 99px;
+            transition: width .25s, background .25s;
+        }
+        .pw-hint {
+            font-size: 0.75rem; font-weight: 600;
+            margin-top: 5px; min-height: 17px;
+            padding: 2px 7px; border-radius: 4px; display: inline-block;
+        }
+        .hint-warn { color: #c0392b; background: #fdf3f2; }
+        .hint-ok   { color: #27ae60; background: #eafaf1; }
+
+        /* Buttons */
+        .cl-btn {
+            width: 100%; padding: 13px; margin-top: 6px;
+            border: none; border-radius: 12px;
+            font-size: 1rem; font-weight: 700; cursor: pointer;
+            letter-spacing: .03em;
+            transition: transform .15s, box-shadow .15s;
+        }
+        .cl-btn:hover  { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(26,115,232,.35); }
+        .cl-btn:active { transform: translateY(0); }
+        .btn-login    { background: linear-gradient(135deg,#1a73e8,#1557b0); color:#fff; }
+        .btn-register { background: linear-gradient(135deg,#00bcd4,#0097a7); color:#fff; }
+        .btn-forgot   { background: linear-gradient(135deg,#7c3aed,#5b21b6); color:#fff; }
+
+        /* Helper links row */
+        .cl-links {
+            text-align: center;
+            margin-top: 14px;
+            font-size: 0.83rem;
+            color: #888;
+            line-height: 1.8;
+        }
+        .cl-links a {
+            color: #1a73e8; text-decoration: none; font-weight: 600;
+        }
+        .cl-links a:hover { text-decoration: underline; }
+        .cl-links .sep { color: #ccc; margin: 0 6px; }
+
+        /* Footer — Back to Home, always at bottom of card */
+        .cl-footer {
+            text-align: center;
+            padding: 14px 32px 20px;
+            border-top: 1px solid #f0f4f8;
+            font-size: 0.82rem;
+        }
+        .cl-footer a {
+            color: #1a73e8; text-decoration: none; font-weight: 600;
+        }
+        .cl-footer a:hover { text-decoration: underline; }
+
+        /* Back link inside forgot panels */
+        .back-link {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 0.82rem; color: #1a73e8; cursor: pointer;
+            background: none; border: none; padding: 0; margin-bottom: 18px;
+            font-weight: 600;
+        }
+        .back-link:hover { text-decoration: underline; }
+
+        /* Alert boxes */
+        .success-box {
+            background: #eafaf1; border: 1.5px solid #27ae60;
+            border-radius: 10px; padding: 14px 16px;
+            color: #1a5c35; font-size: 0.88rem; margin-bottom: 16px;
+            display: none;
+        }
+        .error-box {
+            background: #fdf3f2; border: 1.5px solid #e74c3c;
+            border-radius: 10px; padding: 14px 16px;
+            color: #922b21; font-size: 0.88rem; margin-bottom: 16px;
+            display: none;
+        }
+        .info-box {
+            background: #eff6ff; border: 1.5px solid #1a73e8;
+            border-radius: 10px; padding: 14px 16px;
+            color: #1a3a6e; font-size: 0.88rem; margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+<div class="cl-page">
+    <div class="cl-card">
+
+        <!-- Banner -->
+        <div class="cl-banner">
+            <div class="logo">🧺</div>
+            <h1>CleanEase</h1>
+            <p>Your trusted online laundry service</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="cl-tabs">
+            <button class="cl-tab active" id="tab-login"    onclick="showPanel('login')">🔑 Login</button>
+            <button class="cl-tab"        id="tab-register" onclick="showPanel('register')">✨ Register</button>
+        </div>
+
+        <!-- LOGIN PANEL -->
+        <div class="cl-panel active" id="panel-login">
+            <h2>Welcome back 👋</h2>
+            <p class="sub">Sign in to manage your laundry orders</p>
+            <form id="customerLoginForm">
+                <div class="fg">
+                    <label>📱 Mobile Number</label>
+                    <input type="tel" id="customerPhone" placeholder="Enter your phone number" required>
+                </div>
+                <div class="fg">
+                    <label>🔒 Password</label>
+                    <div class="pw-wrap">
+                        <input type="password" id="customerPassword" placeholder="Enter your password" required>
+                        <button type="button" class="pw-eye" onclick="togglePw('customerPassword',this)">👁️</button>
+                    </div>
+                </div>
+                <button type="submit" class="cl-btn btn-login">Login to Dashboard →</button>
+            </form>
+            <div class="cl-links">
+                <a href="#" onclick="showPanel('forgot-password');return false;">🔒 Forgot Password?</a>
+                <span class="sep">·</span>
+                <a href="#" onclick="showPanel('forgot-phone');return false;">📱 Forgot Phone?</a>
+                <br>
+                No account? <a href="#" onclick="showPanel('register');return false;">Create one free</a>
+            </div>
+        </div>
+
+        <!-- REGISTER PANEL -->
+        <div class="cl-panel" id="panel-register">
+            <h2>Create account 🚀</h2>
+            <p class="sub">Join CleanEase — free pickup & delivery</p>
+            <form id="customerRegisterForm">
+                <div class="fg">
+                    <label>👤 Full Name</label>
+                    <input type="text" id="registerName" placeholder="Enter your full name" required>
+                </div>
+                <div class="fg">
+                    <label>📱 Mobile Number</label>
+                    <input type="tel" id="registerPhone" placeholder="Enter your phone number" required>
+                </div>
+                <div class="fg">
+                    <label>📍 Address</label>
+                    <textarea id="registerAddress" rows="2" placeholder="Enter your address" required></textarea>
+                </div>
+                <div class="fg">
+                    <label>🔒 Password</label>
+                    <div class="pw-wrap">
+                        <input type="password" id="registerPassword"
+                               placeholder="Create a strong password"
+                               oninput="liveValidate(this.value)" required>
+                        <button type="button" class="pw-eye" onclick="togglePw('registerPassword',this)">👁️</button>
+                    </div>
+                    <div class="pw-track"><div class="pw-fill" id="pwFill"></div></div>
+                    <span class="pw-hint" id="pwHint"></span>
+                </div>
+                <div class="fg">
+                    <label>🔒 Confirm Password</label>
+                    <div class="pw-wrap">
+                        <input type="password" id="registerConfirmPassword" placeholder="Re-enter your password" required>
+                        <button type="button" class="pw-eye" onclick="togglePw('registerConfirmPassword',this)">👁️</button>
+                    </div>
+                </div>
+                <button type="submit" class="cl-btn btn-register">Create Account ✓</button>
+            </form>
+            <div class="cl-links">
+                Already have an account? <a href="#" onclick="showPanel('login');return false;">Sign in</a>
+            </div>
+        </div>
+
+        <!-- FORGOT PASSWORD PANEL -->
+        <div class="cl-panel" id="panel-forgot-password">
+            <button class="back-link" onclick="showPanel('login')">← Back to Login</button>
+            <h2>Reset Password 🔒</h2>
+            <p class="sub">Enter your registered phone number to reset your password</p>
+            <div class="error-box"   id="fpError"></div>
+            <div class="success-box" id="fpSuccess"></div>
+            <div id="fpStep1">
+                <form id="forgotPasswordForm">
+                    <div class="fg">
+                        <label>📱 Registered Mobile Number</label>
+                        <input type="tel" id="fpPhone" placeholder="Enter your phone number" required>
+                    </div>
+                    <button type="submit" class="cl-btn btn-login">Verify Phone →</button>
+                </form>
+            </div>
+            <div id="fpStep2" style="display:none;">
+                <div class="info-box">✅ Phone verified! Set your new password below.</div>
+                <form id="resetPasswordForm">
+                    <div class="fg">
+                        <label>🔒 New Password</label>
+                        <div class="pw-wrap">
+                            <input type="password" id="fpNewPassword" placeholder="Enter new password"
+                                   oninput="liveValidateFp(this.value)" required>
+                            <button type="button" class="pw-eye" onclick="togglePw('fpNewPassword',this)">👁️</button>
+                        </div>
+                        <div class="pw-track"><div class="pw-fill" id="fpPwFill"></div></div>
+                        <span class="pw-hint" id="fpPwHint"></span>
+                    </div>
+                    <div class="fg">
+                        <label>🔒 Confirm New Password</label>
+                        <div class="pw-wrap">
+                            <input type="password" id="fpConfirmPassword" placeholder="Re-enter new password" required>
+                            <button type="button" class="pw-eye" onclick="togglePw('fpConfirmPassword',this)">👁️</button>
+                        </div>
+                    </div>
+                    <button type="submit" class="cl-btn btn-login">Reset Password ✓</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- FORGOT PHONE PANEL -->
+        <div class="cl-panel" id="panel-forgot-phone">
+            <button class="back-link" onclick="showPanel('login')">← Back to Login</button>
+            <h2>Find My Account 📱</h2>
+            <p class="sub">Enter your name and address to recover your phone number</p>
+            <div class="error-box"   id="ffError"></div>
+            <div class="success-box" id="ffSuccess"></div>
+            <form id="forgotPhoneForm">
+                <div class="fg">
+                    <label>👤 Full Name</label>
+                    <input type="text" id="ffName" placeholder="Enter your registered full name" required>
+                </div>
+                <div class="fg">
+                    <label>📍 Registered Address</label>
+                    <textarea id="ffAddress" rows="2" placeholder="Enter your registered address" required></textarea>
+                </div>
+                <button type="submit" class="cl-btn btn-forgot">Find My Account →</button>
+            </form>
+        </div>
+
+        <!-- Footer — always visible at bottom -->
+        <div class="cl-footer">
+            <a href="/index.html">← Back to Home</a>
+        </div>
+
+    </div>
+</div>
+
+<script src="customer-login.js"></script>
+<script>
+    function showPanel(name) {
+        document.querySelectorAll('.cl-panel').forEach(function(p){ p.classList.remove('active'); });
+        document.querySelectorAll('.cl-tab').forEach(function(t){ t.classList.remove('active'); });
+        document.getElementById('panel-' + name).classList.add('active');
+        var tab = document.getElementById('tab-' + name);
+        if (tab) tab.classList.add('active');
+        if (name === 'forgot-password') {
+            document.getElementById('fpStep1').style.display = 'block';
+            document.getElementById('fpStep2').style.display = 'none';
+            document.getElementById('fpError').style.display = 'none';
+            document.getElementById('fpSuccess').style.display = 'none';
+            document.getElementById('forgotPasswordForm').reset();
+        }
+        if (name === 'forgot-phone') {
+            document.getElementById('ffError').style.display = 'none';
+            document.getElementById('ffSuccess').style.display = 'none';
+            document.getElementById('forgotPhoneForm').reset();
+        }
+    }
+
+    function togglePw(id, btn) {
+        var el = document.getElementById(id);
+        el.type = el.type === 'password' ? 'text' : 'password';
+        btn.textContent = el.type === 'password' ? '👁️' : '🙈';
+    }
+
+    var PW_CHECKS = [
+        { regex: /.{8,}/,      msg: 'At least 8 characters' },
+        { regex: /[A-Z]/,      msg: 'One uppercase letter (A-Z)' },
+        { regex: /[a-z]/,      msg: 'One lowercase letter (a-z)' },
+        { regex: /[0-9]/,      msg: 'One number (0-9)' },
+        { regex: /[!@#$%^&*]/, msg: 'One special character (!@#$%^&*)' },
+        { regex: /^\S+$/,      msg: 'No spaces allowed' }
+    ];
+    var COLORS = ['#e74c3c','#e74c3c','#e67e22','#f1c40f','#2ecc71','#27ae60'];
+    var WIDTHS  = ['16%','32%','48%','66%','83%','100%'];
+
+    function liveValidate(pw)   { runPwValidate(pw, 'pwFill',   'pwHint');   }
+    function liveValidateFp(pw) { runPwValidate(pw, 'fpPwFill', 'fpPwHint'); }
+
+    function runPwValidate(pw, fillId, hintId) {
+        var fill = document.getElementById(fillId);
+        var hint = document.getElementById(hintId);
+        if (!fill) return;
+        if (!pw) { fill.style.width='0'; hint.textContent=''; hint.className='pw-hint'; return; }
+        var passed=0, firstFail='';
+        PW_CHECKS.forEach(function(c){ if(c.regex.test(pw)) passed++; else if(!firstFail) firstFail=c.msg; });
+        fill.style.width=WIDTHS[passed]||'100%';
+        fill.style.background=COLORS[passed]||'#27ae60';
+        if(passed===PW_CHECKS.length){ hint.textContent='✅ Strong password!'; hint.className='pw-hint hint-ok'; }
+        else { hint.textContent='⚠ '+firstFail; hint.className='pw-hint hint-warn'; }
+    }
+
+    /* Forgot Password */
+    document.getElementById('forgotPasswordForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        var phone = document.getElementById('fpPhone').value.trim();
+        var errEl = document.getElementById('fpError');
+        errEl.style.display = 'none';
+        try {
+            var res  = await fetch(API + '/customer/lookup', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({phone:phone}) });
+            var data = await res.json();
+            if (data.success) {
+                document.getElementById('fpStep1').style.display = 'none';
+                document.getElementById('fpStep2').style.display = 'block';
+                document.getElementById('fpStep2').dataset.phone = phone;
+            } else {
+                errEl.textContent = '❌ ' + (data.message || 'Phone number not found.');
+                errEl.style.display = 'block';
+            }
+        } catch(err) { errEl.textContent = '❌ Cannot connect to server.'; errEl.style.display = 'block'; }
+    });
+
+    document.getElementById('resetPasswordForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        var phone     = document.getElementById('fpStep2').dataset.phone;
+        var newPw     = document.getElementById('fpNewPassword').value;
+        var confirmPw = document.getElementById('fpConfirmPassword').value;
+        var errEl     = document.getElementById('fpError');
+        var sucEl     = document.getElementById('fpSuccess');
+        errEl.style.display = 'none'; sucEl.style.display = 'none';
+        if (newPw !== confirmPw) { errEl.textContent='❌ Passwords do not match.'; errEl.style.display='block'; return; }
+        var strength = checkPasswordStrength(newPw);
+        if (strength !== 'Strong password') { errEl.textContent='❌ '+strength; errEl.style.display='block'; return; }
+        try {
+            var res  = await fetch(API + '/customer/reset-password', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({phone:phone, new_password:newPw}) });
+            var data = await res.json();
+            if (data.success) {
+                sucEl.textContent = '✅ Password reset! Redirecting to login...';
+                sucEl.style.display = 'block';
+                document.getElementById('resetPasswordForm').reset();
+                setTimeout(function(){ showPanel('login'); }, 2000);
+            } else { errEl.textContent='❌ '+(data.message||'Failed.'); errEl.style.display='block'; }
+        } catch(err) { errEl.textContent='❌ Cannot connect to server.'; errEl.style.display='block'; }
+    });
+
+    /* Forgot Phone */
+    document.getElementById('forgotPhoneForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        var name    = document.getElementById('ffName').value.trim();
+        var address = document.getElementById('ffAddress').value.trim();
+        var errEl   = document.getElementById('ffError');
+        var sucEl   = document.getElementById('ffSuccess');
+        errEl.style.display = 'none'; sucEl.style.display = 'none';
+        try {
+            var res  = await fetch(API + '/customer/find-phone', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name:name, address:address}) });
+            var data = await res.json();
+            if (data.success) { sucEl.textContent='✅ Your registered phone: '+data.phone; sucEl.style.display='block'; }
+            else { errEl.textContent='❌ '+(data.message||'No account found.'); errEl.style.display='block'; }
+        } catch(err) { errEl.textContent='❌ Cannot connect to server.'; errEl.style.display='block'; }
+    });
+</script>
+</body>
+</html>
