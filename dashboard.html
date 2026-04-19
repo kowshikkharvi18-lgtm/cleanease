@@ -40,6 +40,9 @@
         </div>
     </aside>
 
+    <!-- Sidebar overlay for mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
     <!-- Main Content -->
     <div class="main-content">
 
@@ -52,6 +55,10 @@
 
         <!-- Top Bar -->
         <div class="topbar">
+            <!-- Hamburger for mobile -->
+            <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleSidebar()" title="Menu">
+                <span></span><span></span><span></span>
+            </button>
             <div class="topbar-title">
                 <h2 id="pageTitle">Dashboard</h2>
                 <p id="pageSubtitle">Welcome back!</p>

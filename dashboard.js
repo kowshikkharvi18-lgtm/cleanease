@@ -571,6 +571,25 @@ async function refreshSection(section) {
     }
 }
 
+// ── Mobile sidebar toggle ──
+function toggleSidebar() {
+    const sidebar  = document.querySelector('.sidebar');
+    const overlay  = document.getElementById('sidebarOverlay');
+    const isOpen   = sidebar.classList.contains('open');
+    sidebar.classList.toggle('open', !isOpen);
+    overlay.classList.toggle('active', !isOpen);
+}
+
+// Close sidebar when a nav item is clicked on mobile
+document.addEventListener('click', function(e) {
+    if (e.target.closest('.nav-item') && window.innerWidth <= 768) {
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.remove('open');
+        overlay.classList.remove('active');
+    }
+});
+
 function logout() {
     const role = currentUser.role;
     sessionStorage.removeItem('user');
@@ -789,7 +808,7 @@ function viewBill(orderId) {
         orderStatusRow.className = 'bill-total-row';
         totalBox.appendChild(orderStatusRow);
     }
-    const os = order.status || 'Pending';
+    const os = order.status || 'Order Placed';
     const statusColors = {
         'Order Placed':  'background:#fef3c7;color:#92400e',
         'Picked Up':     'background:#ede9fe;color:#5b21b6',

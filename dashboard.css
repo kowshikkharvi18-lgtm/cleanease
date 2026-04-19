@@ -1078,15 +1078,124 @@ tbody tr:last-child td { border-bottom: none; }
     .modal-box { box-shadow: none; max-height: none; }
 }
 
+/* ── Hamburger button (mobile only) ── */
+.hamburger-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 36px;
+    height: 36px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+.hamburger-btn span {
+    display: block;
+    height: 2.5px;
+    background: #1a1a2e;
+    border-radius: 2px;
+    transition: all .3s;
+}
+body.dark-mode .hamburger-btn span { background: #e2e8f0; }
+
+/* Sidebar overlay */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 99;
+}
+.sidebar-overlay.active { display: block; }
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
-    .sidebar { width: 0; overflow: hidden; }
-    .main-content { margin-left: 0; }
+    .hamburger-btn { display: flex; }
+
+    .sidebar {
+        position: fixed;
+        left: -280px;
+        top: 0;
+        height: 100vh;
+        z-index: 100;
+        transition: left .3s ease;
+        width: 260px !important;
+        min-width: 260px !important;
+        overflow-y: auto !important;
+    }
+    .sidebar.open { left: 0; }
+
+    .main-content { margin-left: 0 !important; }
+
+    /* Forms */
     .form-row { grid-template-columns: 1fr; }
-    .cloth-item-row { grid-template-columns: 1fr 1fr; }
     .bill-info-grid { grid-template-columns: 1fr; }
-    .stats-grid { grid-template-columns: 1fr 1fr; }
-    .welcome-banner { flex-direction: column; text-align: center; }
+
+    /* Cloth item rows — stack vertically on mobile */
+    .cloth-item-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    .cloth-items-header { display: none; }
+
+    /* Stats */
+    .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .stat-info p { font-size: 1.4rem; }
+
+    /* Welcome banner */
+    .welcome-banner { flex-direction: column; text-align: center; padding: 20px; }
+    .welcome-text h2 { font-size: 1.2rem; }
+
+    /* Topbar */
+    .topbar { padding: 10px 14px; gap: 6px; }
+    .topbar-clock { display: none; }
+    .topbar-title h2 { font-size: 1rem; }
+    .topbar-title p { font-size: 0.72rem; }
+
+    /* Orders */
+    .orders-grid { grid-template-columns: 1fr; }
+    .order-timeline { gap: 2px; overflow-x: auto; padding-bottom: 4px; }
+    .timeline-step span { font-size: 0.6rem; }
+    .timeline-dot { width: 24px !important; height: 24px !important; font-size: 0.7rem !important; }
+
+    /* Page */
+    .page-content { padding: 12px; }
+    .page-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .page-header h2 { font-size: 1.1rem; }
+
+    /* Order page header */
+    .order-page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .order-steps { width: 100%; justify-content: center; }
+
+    /* New order layout */
+    .new-order-layout { grid-template-columns: 1fr; }
+    .live-summary-card { position: static; }
+
+    /* Modal */
+    .modal { padding: 8px; }
+    .modal-box { max-width: 100% !important; max-height: 95vh; border-radius: 16px; }
+    .bill-actions { flex-wrap: wrap; gap: 8px; padding: 12px; }
+    .bill-actions button { flex: 1; min-width: 80px; font-size: 0.78rem; padding: 8px 10px; }
+    .bill-body { padding: 14px; }
+    .bill-table { font-size: 0.76rem; }
+    .bill-table th, .bill-table td { padding: 7px 8px; }
+
+    /* Tables — horizontal scroll */
+    .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table { min-width: 500px; }
+
+    /* Payment options */
+    .order-payment-options { flex-direction: column; }
+
+    /* Place order button */
+    .btn-place-order { font-size: 1rem; padding: 16px; }
+
+    /* Profile */
+    .order-card { max-width: 100% !important; }
 }
 
 /* end of dashboard.css */
