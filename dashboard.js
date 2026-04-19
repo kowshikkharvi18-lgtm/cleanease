@@ -575,18 +575,22 @@ async function refreshSection(section) {
 function toggleSidebar() {
     const sidebar  = document.querySelector('.sidebar');
     const overlay  = document.getElementById('sidebarOverlay');
+    const btn      = document.getElementById('hamburgerBtn');
     const isOpen   = sidebar.classList.contains('open');
     sidebar.classList.toggle('open', !isOpen);
     overlay.classList.toggle('active', !isOpen);
+    if (btn) btn.classList.toggle('open', !isOpen);
 }
 
 // Close sidebar when a nav item is clicked on mobile
 document.addEventListener('click', function(e) {
-    if (e.target.closest('.nav-item') && window.innerWidth <= 768) {
+    if (e.target.closest('.nav-item') && window.innerWidth <= 767) {
         const sidebar = document.querySelector('.sidebar');
         const overlay = document.getElementById('sidebarOverlay');
+        const btn     = document.getElementById('hamburgerBtn');
         sidebar.classList.remove('open');
         overlay.classList.remove('active');
+        if (btn) btn.classList.remove('open');
     }
 });
 

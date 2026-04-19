@@ -1000,15 +1000,28 @@ tbody tr:last-child td { border-bottom: none; }
 @media (max-width: 768px) {
     .landing-nav { padding: 1rem 1.5rem; }
     .hero { padding: 2rem 1.5rem; }
-    .hero h1 { font-size: 2.2rem; }
+    .hero h1 { font-size: 2rem; }
+    .hero p { font-size: 1rem; }
+    .hero-buttons { flex-direction: column; }
+    .btn-hero-primary, .btn-hero-secondary { text-align: center; }
     .features-section, .pricing-section { padding: 3rem 1.5rem; }
-    .landing-footer { padding: 1.5rem; flex-direction: column; text-align: center; }
-    .sidebar { transform: translateX(-100%); }
-    .main-content { margin-left: 0; }
-    .form-row { grid-template-columns: 1fr; }
-    .cloth-item-row { grid-template-columns: 1fr 1fr; }
+    .section-header h2 { font-size: 1.6rem; }
+    .features-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .pricing-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .landing-footer { padding: 1.5rem; flex-direction: column; text-align: center; gap: 0.75rem; }
+    .footer-links { flex-wrap: wrap; justify-content: center; gap: 1rem; }
     .hero-cards { flex-direction: column; }
     .stats-grid { grid-template-columns: 1fr 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    /* Don't override dashboard sidebar here — handled in dashboard.css */
+}
+
+@media (max-width: 480px) {
+    .hero h1 { font-size: 1.7rem; }
+    .features-grid { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr 1fr; }
+    .portal-card { padding: 1.2rem; }
+    .portal-card-icon { width: 44px; height: 44px; font-size: 1.4rem; }
 }
 
 /* ===== ADMIN LOGIN PAGE ===== */

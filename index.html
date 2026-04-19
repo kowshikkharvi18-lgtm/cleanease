@@ -2,15 +2,69 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>CleanEase - Online Laundry Service</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* ── Mobile Nav ── */
+        .nav-hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+        }
+        .nav-hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: #fff;
+            border-radius: 2px;
+            transition: all .3s;
+        }
+        .mobile-nav-open .nav-hamburger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .mobile-nav-open .nav-hamburger span:nth-child(2) { opacity: 0; }
+        .mobile-nav-open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        .nav-links-mobile {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0; right: 0;
+            background: rgba(13,71,161,0.98);
+            backdrop-filter: blur(10px);
+            flex-direction: column;
+            padding: 12px 0;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            z-index: 200;
+        }
+        .nav-links-mobile.open { display: flex; }
+        .nav-links-mobile a {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            padding: 14px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            transition: background .2s;
+        }
+        .nav-links-mobile a:last-child { border-bottom: none; }
+        .nav-links-mobile a:hover { background: rgba(255,255,255,0.1); }
+
+        @media (max-width: 640px) {
+            .nav-links { display: none !important; }
+            .nav-hamburger { display: flex !important; }
+            .landing-nav { position: relative; }
+        }
+    </style>
 </head>
 <body>
 <div class="landing-page">
 
     <!-- Navigation -->
-    <nav class="landing-nav">
+    <nav class="landing-nav" id="landingNav">
         <a href="#" class="nav-brand">
             <span class="brand-icon">🧺</span>
             <div>
@@ -18,10 +72,22 @@
                 <span class="brand-tagline">Online Laundry Service</span>
             </div>
         </a>
+        <!-- Desktop links -->
         <div class="nav-links">
             <a href="#features">Features</a>
             <a href="#pricing">Pricing</a>
             <a href="customer-login.html">Login</a>
+        </div>
+        <!-- Mobile hamburger -->
+        <button class="nav-hamburger" id="navHamburger" onclick="toggleMobileNav()" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+        <!-- Mobile dropdown -->
+        <div class="nav-links-mobile" id="mobileNavLinks">
+            <a href="#features" onclick="closeMobileNav()">✨ Features</a>
+            <a href="#pricing" onclick="closeMobileNav()">💰 Pricing</a>
+            <a href="customer-login.html">🔑 Customer Login</a>
+            <a href="admin-login.html">📊 Admin Login</a>
         </div>
     </nav>
 
@@ -151,5 +217,21 @@
 
 </div>
 
+<script>
+function toggleMobileNav() {
+    var nav = document.getElementById('landingNav');
+    var links = document.getElementById('mobileNavLinks');
+    nav.classList.toggle('mobile-nav-open');
+    links.classList.toggle('open');
+}
+function closeMobileNav() {
+    document.getElementById('landingNav').classList.remove('mobile-nav-open');
+    document.getElementById('mobileNavLinks').classList.remove('open');
+}
+// Close on outside click
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('#landingNav')) closeMobileNav();
+});
+</script>
 </body>
 </html>
